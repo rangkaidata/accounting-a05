@@ -2,6 +2,7 @@
  * name: budiono
  * date: oct-02, 16:25, mon-2023; new
  * edit: oct-04, 12:26, wed-2023; xHTML;
+ * edit: oct-06, 17:37, fri-2023; neraca saldo;
 */
 
 'use strict';
@@ -86,12 +87,18 @@ AccountBalances.readShow=(indek)=>{
   +'<th colspan="2">Account ID</th>'
   +'<th>Account Name</th>'
   +'<th>Account Class</th>'
-  +'<th>Assets,<br>Expenses,<br>Cost of Sales</th>'
-  +'<th>Liabilities,<br>Equity,<br>Income</th>'
+  //+'<th>Assets,<br>Expenses,<br>Cost of Sales</th>'
+  //+'<th>Liabilities,<br>Equity,<br>Income</th>'
+  +'<th>Debit</th>'
+  +'<th>Credit</th>'
   +'<th>Action</th>';
-
+  
+  
   if (paket.err.id===0){
     var d=paket.data;
+    var sum_d=0;
+    var sum_c=0;
+    
     for (x in d){
       html+='<tr>'
       +'<td align="center">'+d[x].row+'</td>'
@@ -112,10 +119,19 @@ AccountBalances.readShow=(indek)=>{
         +'</button>'
         +'</td>'
       +'</tr>';
+      sum_d+=d[x].debit;
+      sum_c+=d[x].credit;
     }
   }
-
-  html+='</table></div>';
+  // sum
+  html+='<tr>'
+    +'<td colspan="3">&nbsp;</td>'
+    +'<td align="left"><strong>Balance</strong></td>'
+    +'<td align="center"><strong>'+formatSerebuan(sum_d)+'</strong></td>'
+    +'<td align="center"><strong>'+formatSerebuan(sum_c)+'</strong></td>'
+    +'<td>&nbsp;</td>'
+    +'</tr>'
+    +'</table></div>';
   content.html(indek,html);
   if(paket.err.id!=0) content.infoPaket(indek,paket);
 }
@@ -199,9 +215,9 @@ AccountBalances.readOne=(indek)=>{
         +'<td align="center">'+tglWest(list1[x].balance_date)+'</td>'
         +'<td align="left">'+list1[x].balance_date+'</td>'
 
-        +'<td align="right">'+list1[x].debit_amount+'</td>'
-        +'<td align="right">'+list1[x].credit_amount+'</td>'
-        +'<td align="right">'+list1[x].balance_amount+'</td>'
+        +'<td align="right">'+formatSerebuan(list1[x].debit_amount)+'</td>'
+        +'<td align="right">'+formatSerebuan(list1[x].credit_amount)+'</td>'
+        +'<td align="right">'+formatSerebuan(list1[x].balance_amount)+'</td>'
         +'<td align="left">'+list1[x].note+'</td>'
         +'<td align="left">'+list1[x].modul_id+'</td>'
 
@@ -223,9 +239,9 @@ AccountBalances.readOne=(indek)=>{
       
       html+='<tr>'
         +'<td colspan="3" align="right"><b>Balance:</b></td>'
-        +'<td align="right"><b>'+remain_debit+'</b></td>'
-        +'<td align="right"><b>'+remain_credit+'</b></td>'
-        +'<td align="right"><b>'+remain_total+'</b></td>'
+        +'<td align="right"><b>'+formatSerebuan(remain_debit)+'</b></td>'
+        +'<td align="right"><b>'+formatSerebuan(remain_credit)+'</b></td>'
+        +'<td align="right"><b>'+formatSerebuan(remain_total)+'</b></td>'
         +'<td colspan="2">&nbsp;</td>'
         +'</tr>'
         +'</table></div>';
